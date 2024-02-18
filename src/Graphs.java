@@ -5,6 +5,9 @@ public class Graphs {
     private boolean isDirected;
     private boolean isWeighted;
 
+    public List<Vertex> getVertexList(){
+        return this.vertexList;
+    }
     public Graphs(boolean isDirected, boolean isWeighted) {
         this.vertexList = new ArrayList<Vertex>();
         this.isDirected = isDirected;
@@ -212,35 +215,57 @@ public class Graphs {
         }
         return count;
     }
-     public int shortestPath(Vertex start, Vertex  desitination){
-        int shortestPath=0;
-         Set<Integer> hashSet=new HashSet<>();
-         Queue<Vertex> queue=new PriorityQueue<>(new Comparator<Vertex>() {
+     public int shortestPath(Vertex start, Vertex  desitination) {
+         int shortestPath = 0;
+         Set<Integer> hashSet = new HashSet<>();
+         Queue<Vertex> queue = new PriorityQueue<>(new Comparator<Vertex>() {
              @Override
              public int compare(Vertex o1, Vertex o2) {
-                 return o1.value-o2.value;
+                 return o1.value - o2.value;
              }
          });
          queue.add(start);
-         while(!queue.isEmpty()){
-             Vertex currentVertex=queue.poll();
-             if(hashSet.contains(currentVertex.value)) continue;
-             if(desitination.value==currentVertex.value){
-                 if(shortestPath==0 || (shortestPath>currentVertex.count))
-                shortestPath=currentVertex.count;
+         while (!queue.isEmpty()) {
+             Vertex currentVertex = queue.poll();
+             if (hashSet.contains(currentVertex.value)) continue;
+             if (desitination.value == currentVertex.value) {
+                 if (shortestPath == 0 || (shortestPath > currentVertex.count))
+                     shortestPath = currentVertex.count;
              }
-            hashSet.add(currentVertex.value);
-             for(Edge edge: currentVertex.edges){
-                 if(hashSet.contains(edge.getEndVertex())) continue;
-                 edge.getEndVertex().count=currentVertex.count+1;
+             hashSet.add(currentVertex.value);
+             for (Edge edge : currentVertex.edges) {
+                 if (hashSet.contains(edge.getEndVertex())) continue;
+                 edge.getEndVertex().count = currentVertex.count + 1;
                  queue.add(edge.getEndVertex());
              }
          }
          return shortestPath;
      }
-     
-}
 
+     // think so this algo for directed graphs only.
+    public void dijkstraAlgo(Vertex start) {
+        Queue<Vertex> queue = new PriorityQueue<>(new Comparator<Vertex>() {
+            @Override
+            public int compare(Vertex o1, Vertex o2) {
+               return o1.value-o2.value;
+            }
+        });
+        queue.add(start);
+        while(!queue.isEmpty()){
+            Vertex currentVertex=queue.poll();
+            for(Edge edge : currentVertex.edges) {
+                if(edge.getEndVertex().count==0 || (currentVertex.count + edge.getWeight()) < edge.getEndVertex().count){
+                    edge.getEndVertex().count= currentVertex.count + edge.getWeight();
+                }
+                queue.add(edge.getEndVertex());
+            }
+        }
+    }
+
+
+
+
+}
 
 
 
