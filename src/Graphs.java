@@ -269,6 +269,7 @@ public class Graphs {
     public String countTheIslandProblem(String[][] array, int weidht, int height) {
         int numberofislands = 0;
         int largestIsland = 0;
+        int minimumIsland=0;
         Set<String> hashSet = new HashSet<>();
         for (int i = 0; i < weidht; i++) {
             for (int j = 0; j < height; j++) {
@@ -316,10 +317,13 @@ public class Graphs {
                 if (temp > largestIsland) {
                     largestIsland = temp;
                 }
+                if (temp < minimumIsland || minimumIsland ==0) {
+                     minimumIsland = temp;
+                }
             }
 
         }
-        return "total numberofislands are " + numberofislands + " and largest island size is " + largestIsland;
+        return "total numberofislands are " + numberofislands + " and largest island size is " + largestIsland+ " and the minimum island is " +minimumIsland;
     }
 }
 
