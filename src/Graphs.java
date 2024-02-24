@@ -5,9 +5,10 @@ public class Graphs {
     private boolean isDirected;
     private boolean isWeighted;
 
-    public List<Vertex> getVertexList(){
+    public List<Vertex> getVertexList() {
         return this.vertexList;
     }
+
     public Graphs(boolean isDirected, boolean isWeighted) {
         this.vertexList = new ArrayList<Vertex>();
         this.isDirected = isDirected;
@@ -196,7 +197,7 @@ public class Graphs {
         for (Vertex vertex : vertexList) {
             if (!hashSet.contains(vertex.value)) {
                 int count = recLC(hashSet, vertex);
-                if(count> largest) largest=count;
+                if (count > largest) largest = count;
             }
         }
         return largest;
@@ -215,47 +216,48 @@ public class Graphs {
         }
         return count;
     }
-     public int shortestPath(Vertex start, Vertex  desitination) {
-         int shortestPath = 0;
-         Set<Integer> hashSet = new HashSet<>();
-         Queue<Vertex> queue = new PriorityQueue<>(new Comparator<Vertex>() {
-             @Override
-             public int compare(Vertex o1, Vertex o2) {
-                 return o1.value - o2.value;
-             }
-         });
-         queue.add(start);
-         while (!queue.isEmpty()) {
-             Vertex currentVertex = queue.poll();
-             if (hashSet.contains(currentVertex.value)) continue;
-             if (desitination.value == currentVertex.value) {
-                 if (shortestPath == 0 || (shortestPath > currentVertex.count))
-                     shortestPath = currentVertex.count;
-             }
-             hashSet.add(currentVertex.value);
-             for (Edge edge : currentVertex.edges) {
-                 if (hashSet.contains(edge.getEndVertex())) continue;
-                 edge.getEndVertex().count = currentVertex.count + 1;
-                 queue.add(edge.getEndVertex());
-             }
-         }
-         return shortestPath;
-     }
 
-     // think so this algo for directed graphs only.
+    public int shortestPath(Vertex start, Vertex desitination) {
+        int shortestPath = 0;
+        Set<Integer> hashSet = new HashSet<>();
+        Queue<Vertex> queue = new PriorityQueue<>(new Comparator<Vertex>() {
+            @Override
+            public int compare(Vertex o1, Vertex o2) {
+                return o1.value - o2.value;
+            }
+        });
+        queue.add(start);
+        while (!queue.isEmpty()) {
+            Vertex currentVertex = queue.poll();
+            if (hashSet.contains(currentVertex.value)) continue;
+            if (desitination.value == currentVertex.value) {
+                if (shortestPath == 0 || (shortestPath > currentVertex.count))
+                    shortestPath = currentVertex.count;
+            }
+            hashSet.add(currentVertex.value);
+            for (Edge edge : currentVertex.edges) {
+                if (hashSet.contains(edge.getEndVertex())) continue;
+                edge.getEndVertex().count = currentVertex.count + 1;
+                queue.add(edge.getEndVertex());
+            }
+        }
+        return shortestPath;
+    }
+
+    // think so this algo for directed graphs only.
     public void dijkstraAlgo(Vertex start) {
         Queue<Vertex> queue = new PriorityQueue<>(new Comparator<Vertex>() {
             @Override
             public int compare(Vertex o1, Vertex o2) {
-               return o1.value-o2.value;
+                return o1.value - o2.value;
             }
         });
         queue.add(start);
-        while(!queue.isEmpty()){
-            Vertex currentVertex=queue.poll();
-            for(Edge edge : currentVertex.edges) {
-                if(edge.getEndVertex().count==0 || (currentVertex.count + edge.getWeight()) < edge.getEndVertex().count){
-                    edge.getEndVertex().count= currentVertex.count + edge.getWeight();
+        while (!queue.isEmpty()) {
+            Vertex currentVertex = queue.poll();
+            for (Edge edge : currentVertex.edges) {
+                if (edge.getEndVertex().count == 0 || (currentVertex.count + edge.getWeight()) < edge.getEndVertex().count) {
+                    edge.getEndVertex().count = currentVertex.count + edge.getWeight();
                 }
                 queue.add(edge.getEndVertex());
             }
@@ -263,9 +265,68 @@ public class Graphs {
     }
 
 
+    // count the island problem
+    public String countTheIslandProblem(String[][] array, int weidht, int height) {
+        int numberofislands = 0;
+        int largestIsland = 0;
+        Set<String> hashSet = new HashSet<>();
+        for (int i = 0; i < weidht; i++) {
+            for (int j = 0; j < height; j++) {
+                if (hashSet.contains(i + "-" + j)) continue;
+                if (!array[i][j] .equals("L")) {
+                    continue;
+                }
+                Queue<String> queue = new PriorityQueue<>();
+                queue.add(i + "-" + j);
+                int temp = 0;
+                whileloop:
+                while (!queue.isEmpty()) {
+                    String current = queue.poll();
+                    if (hashSet.contains(current)) {
+                        continue whileloop;
+                    }
+                    hashSet.add(current);
+                    temp++;
+                    String[] tempArray = current.split("-");
+                    int currentI = Integer.parseInt(tempArray[0]);
+                    int currentJ = Integer.parseInt(tempArray[1]);
+                    // directions
+                    Integer left = (currentI - 1) < 0 ? null : currentI - 1;
+                    Integer right = currentI + 1 > weidht - 1 ? null : currentI + 1;
+                    Integer bottom = currentJ + 1 > height - 1 ? null : currentJ + 1;
+                    Integer top = currentJ - 1 < 0 ? null : currentJ - 1;
+                    //left
+                    if (left != null && array[left][currentJ].equals("L")) {
+                        queue.add(left + "-" + currentJ);
+                    }
+                    // right
+                    if (right != null && array[right][currentJ].equals("L")) {
+                        queue.add(right + "-" + currentJ);
+                    }
+                    //bottom
+                    if (bottom != null && array[currentI][bottom].equals("L")) {
+                        queue.add(currentI + "-" + bottom);
+                    }
+                    //top
+                    if (top != null && array[currentI][top].equals("L")) {
+                        queue.add(currentI + "-" + top);
+                    }
+                }
+                numberofislands++;
+                if (temp > largestIsland) {
+                    largestIsland = temp;
+                }
+            }
 
-
+        }
+        return "total numberofislands are " + numberofislands + " and largest island size is " + largestIsland;
+    }
 }
+
+
+
+
+
 
 
 
